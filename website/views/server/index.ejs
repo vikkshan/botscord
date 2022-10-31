@@ -1,0 +1,85 @@
+<%- include('../includes/header.ejs', { title: server.name, server: server}) %>
+<br><br><br><br>
+<div class="lg:flex space-x-4 py-2 lg:h-5/6 sm:min-h-min">
+  <div class="p-10 bg-blue-color w-full text-white h-full m-4 lg:mx-14 text-ellipsis lg:w-2/3">
+    <div class="prose prose-invert">
+
+      <%- description %>
+    </div>
+  </div>
+  <div class="bg-blue-color w-full p-10 text-white h-full lg:w-1/4 lg:m-4">
+    <img class="w-full rounded-full max-w-xs" src="<%= serverr.icon ? 'https://cdn.discordapp.com/icons/'+server.id+'/'+serverr.icon+'.webp?size=1024' : '/img/logo.webp' %>" alt="<%= server.name %>" onerror="this.src='/img/logo.png'">
+    <h1 class="text-3xl">
+      <%= server.name %>
+    </h1>
+    <a href="/server/<%= server.id %>/vote" class="button float-left inline-block bg-button-primary rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"><i class="fa fa-link"></i>
+      Vote</a>
+    <a href="/server/<%= server.id %>/join" class="button float-right inline-block bg-button-primary rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"><i class="fa fa-link"></i>
+      Join</a>
+    <br>
+    <% if(user) { if(serverr.members.cache.get(user.id)) {
+                if(serverr.members.cache.get(user.id).permissions.has(global.discord.PermissionsBitField.adminstrator)) { %>
+    <div class="h6 mt-4">
+      <i class="fa user-crown"></i>Owner Options
+    </div>
+    <a href="/server/<%= server.id %>/settings" class="mt-1">
+      <div class="box-2-p"><i class="mt-1 fa fa-pencil"></i>
+        <p class="box-2">Edit Server</p>
+      </div>
+    </a>
+    <% } } } %>
+    <h6 class="text-xl mt-4">
+      <i class="fa fa-question-circle"></i> Information
+    </h6>
+    <div class="mt-1">
+      <div class="box-2-p"><i class="mt-1 fa fa-users"></i></div>
+      <p class="box-2">Votes:&nbsp;<%= server.votes || 0 %>
+      </p>
+    </div>
+    <div class="mt-1">
+      <div class="box-2-p"><i class="mt-1 fa fa-users"></i></div>
+      <p class="box-2">Members:&nbsp;<%= serverr.memberCount.toLocaleString().replace(',', '.' ) %>/ <%= serverr.members.cache.filter(a => a.presence?.status).size  %> online
+      </p>
+    </div>
+    <div class="mt-1">
+      <div class="box-2-p"><i class="mt-1 fa fa-robot"></i></div>
+      <p class="box-2">Bots:&nbsp;<%= serverr.members.cache.filter(a=> a.user.bot).size %>
+      </p>
+    </div>
+    <div class="mt-1">
+      <div class="box-2-p"><i class="mt-1 fa fa-icons"></i></div>
+      <p class="box-2">Emoji:&nbsp;<%= serverr.emojis.cache.size || "0" %>
+      </p>
+    </div>
+    <div class="mt-1">
+      <div class="box-2-p"><i class="mt-1 fa fa-user"></i></div>
+      <p class="box-2">Role Count:&nbsp;<%= serverr.roles.cache.size || "0" %>
+      </p>
+    </div>
+    <div class="mt-1">
+      <div class="box-2-p"><i class="mt-1 fa fa-diamond"></i></div>
+      <p class="box-2">Boost Level:&nbsp;<%= serverr.premiumTier || "0" %>
+      </p>
+    </div>
+    <div class="h6 mt-4">
+      <i class="fa fa-crown"></i> Owners
+    </div>
+    <% serverr.members.cache.filter(a=> !a.user.bot && a.permissions.has(global.discord.PermissionsBitField.Flags.Administrator)).map(admin =>{
+                        %>
+    <a style="text-decoration: none;margin-bottom: -5px;" href="/user/<%= admin.user.id %>" class="flex mt-1">
+      <div class="h-5 w-5 rounded-lg" style="background: url(<%= admin.user.avatarURL({dynamic:true}) || '../../img/undefined_avatar.png' %>) center center no-repeat; background-size: 100%;">
+      </div>
+      <p translate="no" class="box-2">
+        <%= admin.user.tag %>
+        <% if(admin.user.id===serverr.ownerID) { %>
+        &nbsp;<span data-toggle="tooltip" title="Join the server"><i class="fa fa-crown has-text-warning"></i></span>
+        <% } %>
+      </p>
+    </a>
+    <% }) %>
+
+  </div>
+</div>
+<br><br><br>
+
+<%- include('../includes/footer.ejs') %>

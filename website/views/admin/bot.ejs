@@ -1,0 +1,16 @@
+<%- include("../includes/header.ejs", { title: "Bot" + bots.name}) %>
+<div class="overflow-x-auto relative container-sm text-center">
+  <% if(typeof reject  != "undefined") { %>
+  <form action="" method="post">
+    <h1 class="text-xl text-white">Are you sure you want to reject this bot?</h1>
+    <p class="text-white">Reason: <input type="text " name="reason" class=" text-black "></p>
+    <input type="submit" value="Yes" name="reject" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+    <input type="submit" value="No"  class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full" onclick="location.href='/admin'">
+  </form>
+  <% } %>
+  <% if(typeof verify != "undefined") { %>
+  <form action="" method="post">
+    <h1 class="text-xl">Are you sure you want to verify this bot?</h1>
+    <input type="submit" value="Yes" name="verify" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onclick="location.href='/admin/bot/<%= bots.id %>/verify'">
+  </form>
+  <% } %>

@@ -1,0 +1,88 @@
+<%- include('../includes/header.ejs', { title: bot.name, bot: bot}) %>
+<br><br><br><br>
+<div class="lg:flex space-x-4 py-2 lg:h-5/6 sm:min-h-min">
+  <div class="p-10 bg-blue-color w-full text-white h-full m-4 lg:mx-14 text-ellipsis lg:w-2/3">
+    <div class="prose prose-invert">
+
+      <%- description %>
+    </div>
+  </div>
+  <div class="bg-blue-color w-full p-10 text-white h-full lg:w-1/4 lg:m-4">
+    <!-- bot avatar image -->
+    <img class="w-full rounded-full" src="<%= bota.avatar ? 'https://cdn.discordapp.com/avatars/' +bot.id +'/'+bota.avatar + '.webp?size=1024' : '/img/logo.webp' %>" onerror="this.src='/img/logo.webp'" alt=" <%= bot.name %>">
+    <h1 class="text-3xl text-center">
+      <%= bot.name %>
+    </h1>
+    <a href="/bot/<%= bot.id %>/invite" class="button float-right inline-block bg-button-primary rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"><i class="fa fa-link"></i>
+      Invite</a>
+    <a href="/bot/<%= bot.id %>/vote" class="button float-left inline-block bg-button-primary rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"><i class="fa fa-link"></i>
+      Vote</a>
+    <br>
+    <% if(user) {  
+                bot.owners.forEach(a=>{
+                    if(a == user.id) {
+                        %>
+    <div class="h6 mt-4">
+      <i class="fa fa-user-crown"></i>Owner Options
+    </div>
+    <a href="/bot/<%= bot.id %>/settings" class="button float-right"><i class="fa fa-edit"></i>
+      Edit</a>
+    <%
+                    }
+                })
+            }
+                %>
+    <h6 class="text-xl mt-4">
+      <i class="fa fa-question-circle"></i> Information
+    </h6>
+    <% if(bot.users){ %>
+    <div class="mt-1">
+      <div class="box-2-p"><i class="mt-1 fa fa-users"></i></div>
+      <p class="box-2">Members:&nbsp;<%= bot.users %></p>
+      </p>
+    </div>
+    <% } %>
+    <% if(bot.servers){ %>
+    <div class="mt-1">
+      <div class="box-2-p"><i class="mt-1 fa fa-server"></i></div>
+      <p class="box-2">Servers:&nbsp;<%= bot.servers %></p>
+      </p>
+    </div>
+    <% } %>
+    <% if(typeof bot.prefix != "undefined"){ %>
+    <div class="mt-1">
+      <div class="box-2-p"><i class="mt-1 fa fa-server"></i></div>
+      <p class="box-2">Prefix:&nbsp;<%= bot.prefix %></p>
+      </p>
+    </div>
+    <% } %>
+    <div class="mt-1">
+      <div class="box-2-p"><i class="mt-1 fa fa-users"></i></div>
+      <p class="box-2">Votes:&nbsp;<%= bot.votes  || 0 %>
+      </p>
+    </div>
+    <div class="h6 mt-4">
+      <i class="fa fa-crown"></i> Owners
+    </div>
+    <a style="text-decoration: none;margin-bottom: -5px;" href="/user/<%= bot.owner %>" class="flex mt-1">
+      <div class="h-5 w-5 rounded-lg" style="background: url(<%= "https://cdn.discordapp.com/avatars/" + bot.owner + "/" + global.bsl.users.cache.get(bot.owner).avatar + ".webp" || '/img/logo.webp' %>) center center no-repeat; background-size: 100%;">
+      </div>
+      <p translate="no" class="box-2">
+        <%=global.bsl.users.cache.get(bot.owner).username %>
+      </p>
+    </a>
+    <% owners.forEach(admin=>{
+                        %>
+    <a style="text-decoration: none;margin-bottom: -5px;" href="/user/<%= admin.id %>" class="flex mt-1">
+      <div class="h-5 w-5 rounded-lg" style="background: url(<%= "https://cdn.discordapp.com/avatars/" + admin.id + "/" + admin.avatar + ".webp" || '/img/logo.webp' %>) center center no-repeat; background-size: 100%;">
+      </div>
+      <p translate="no" class="box-2">
+        <%=admin.username %>
+      </p>
+    </a>
+    <% }) %>
+
+  </div>
+</div>
+<br><br><br>
+<%- include('../includes/footer.ejs') %>

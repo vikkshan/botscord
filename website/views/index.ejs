@@ -1,0 +1,294 @@
+<%- include("./includes/header.ejs", { user:user }) %>
+<div class="bg-blue-color  bg-primary-color p-2 pl-10 pr-10" style="position: relative;  top: 0px;">
+  <div class="container-sm mx-auto px-3 mb-5 mt-1 h-fit p-1">
+    <div class="mb-3 mx-auto h-fit">
+      <span style="float: right; margin-right: 10%;" class="logo">
+        <img draggable="false" title="botscord.site" src="/img/logo.webp" width="320" alt="Discord Bots | Discord Bot List">
+      </span>
+      <br><br>
+      <h1 class="text-xl" style="font-weight:800;color:#fff">BotsCord</h1>
+      <p class="content" style="opacity:.6;color:#fff">Find the best Discord Bots for your server with BotsCord!</p>
+      <br>
+      <form class="flex items-center ">
+        <label for="simple-search" class="sr-only">Search</label>
+        <div class="relative w-3/6">
+          <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+            <svg aria-hidden="true" class="w-5 h-5 text-primary-color dark:text-primary-color" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <input type="text" id="simple-search" class="bg-primary-color border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-primary-color dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required>
+          <div id="search-results" class="hidden bg-primary-color border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full pl-10 p-2.5  dark:bg-primary-color dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></div>
+        </div>
+      </form><br>
+      <script>
+        var search = document.getElementById('simple-search');
+        search.addEventListener("keyup", function(e) {
+          if (!search.value) {
+            document.getElementById('search-results').innerHTML = "";
+            document.getElementById('search-results').classList.add('hidden');
+            return;
+          } else {
+            $.ajax({
+              url: '/api/v1/search/' + search.value,
+              type: 'GET',
+              success: function(data) {
+                var html = '';
+                if (!data.array.length) html = '<div class="text-center">No results found</div>';
+                for (var i = 0; i < data.array.length; i++) {
+                  if (i == 5) {
+                    break;
+                  }
+                  if (data.array[i].type == 'server') {
+                    html += '<a href="/server/' + data.array[i].id + '" class="flex items-center p-2 border-b border-gray-300 hover:bg-primary-color hover:text-white"><img title="botscord.site" class="mr-2" width="48" onError="this.src = ' + "'/img/logo.webp'" + '" style="border-radius: 8px;" src="' + data.array[i].avatar + '" />' + data.array[i].name + ' | Server</a>';
+                  } else {
+                    html += '<a href="/bot/' + data.array[i].id + '" class="flex items-center p-2 border-b border-gray-300 hover:bg-primary-color hover:text-white"><img title="botscord.site" class="mr-2" width="48" onError="this.src = ' + " '/img/logo.webp'" + '" style="border-radius: 8px;" src="' + data.array[i].avatar + '" />' + data.array[i].name + ' | Bot </a>';
+                  }
+                }
+                var searchr = document.getElementById('search-results');
+                if (searchr.classList.contains("hidden")) {
+                  searchr.classList.remove("hidden");
+                }
+                document.getElementById('search-results').innerHTML = html;
+
+              }
+            });
+          }
+        });
+      </script>
+      <a title="BotsCord" href="/tag/Moderation" class="text-white bg-button-primary hover:bg-button-primary focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-sm px-2 py-2 mb-2 dark:bg-button-primary dark:hover:bg-button-primary focus:outline-none dark:focus:ring-button-primary underline hover:no-underline"><i class="fa fa-magic"></i>&nbsp;Moderation</a>
+      <a title="BotsCord" href="/tag/Fun" class="text-white bg-button-primary hover:bg-button-primary focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-sm px-2 py-2  mb-2 dark:bg-button-primary dark:hover:bg-button-primary focus:outline-none dark:focus:ring-button-primary underline hover:no-underline"><i class="fa fa-smile"></i>&nbsp;Fun</a>
+      <a title="BotsCord" href="/tag/Moderation" class="text-white bg-button-primary hover:bg-button-primary focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-sm px-2 py-2 mb-2 dark:bg-button-primary dark:hover:bg-button-primary focus:outline-none dark:focus:ring-button-primary underline hover:no-underline"><i class="fa fa-file"></i>&nbsp;Logging</a>
+      <a title="BotsCord" href="/tag/Utility" class="text-white bg-button-primary hover:bg-button-primary focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-sm px-2 py-2 mb-2 dark:bg-button-primary dark:hover:bg-button-primary focus:outline-none dark:focus:ring-button-primary underline hover:no-underline"><i class="fa fa-cogs"></i>&nbsp;Utility</a>
+      <br><br><br><br>
+    </div>
+  </div>
+</div>
+<!-- bots section -->
+<div class="promotedbots">
+  <% var nbots=bots.filter(a=> a.promoted == true)
+      nbots.forEach((val, key) => {
+      randomIndex = Math.ceil(Math.random()*(key + 1));
+      nbots[key] = nbots[randomIndex];
+      nbots[randomIndex] = val;
+      });
+      if(nbots.length > 0) { %>
+  <div class="mx-auto text-center">
+    <br>
+    <h2 class="text-xl text-white text-center"><i class="fa fa-bullhorn" aria-hidden="true"></i> Promoted Bots
+    </h2>
+    <p class="content text-white text-center" style="opacity:.6">These bots are featured on BotsCord!</p>
+  </div>
+  <div class="grid columns items-center content-center justify-center grid-cols-1 gap-4 col-auto sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 m-8">
+    <% } %>
+    <% for(let i=0; i < nbots.length; i++) { if (i===5) break; var bot=nbots[i]; if(bot) { %>
+    <% var bott = global.bsl.users.cache.get(bot.id); %>
+    <div class="transition-shadow ease-in-out duration-300 hover:shadow-blue-900 shadow-2xl rounded-lg max-w-sm bg-blue-color " onclick="location.href='/bot/<%=bot.id%> ';" style="cursor: pointer;">
+      <img class="w-full rounded-full" src="<%= bott.avatar ? 'https://cdn.discordapp.com/avatars/' +bot.id +'/'+bott.avatar + '.webp?size=1024' : '/img/logo.webp' %>" onerror=" this.src='/img/logo.webp'" alt=" <%= bot.name %>">
+      <div class="px-6 text-white text-base">
+        <p><i class="fa-solid fa-check-to-slot"></i>: <%= bot.votes || 0 %> <%if(bot.servers) { %><i class="fa fa-server"></i>: <%= bot.servers %><% } %>
+        </p>
+      </div>
+      <div class="px-6 py-4">
+        <div class="font-bold text-xl mb-2 text-white">
+          <%= bot.name %>
+        </div>
+        <p class="text-white text-base">
+          <%= bot.description %>
+        </p>
+      </div>
+      <% if(bot.tags) {%>
+      <div class="px-6 pt-4 pb-2">
+        <% bot.tags.slice(-3).forEach(tag=>{ %>
+        <a href="/tag/<%= tag %>" class="inline-block bg-button-primary rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">#<%= tag %>
+        </a>
+        <% }) %>
+      </div>
+      <% } %>
+    </div>
+    <% } %>
+    <% } %>
+  </div>
+</div>
+<div class="randombots">
+  <% var nbots=bots.filter(a=> a.verified == true)
+      nbots.forEach((val, key) => {
+      randomIndex = Math.ceil(Math.random()*(key + 1));
+      nbots[key] = nbots[randomIndex];
+      nbots[randomIndex] = val;
+      });
+      if(nbots.length > 0) { %>
+  <div class="mx-auto text-center">
+    <br>
+    <h2 class="text-xl text-white text-center"><i class="fa fa-shuffle" aria-hidden="true"></i> Random Bots
+    </h2>
+    <p class="content text-white text-center" style="opacity:.6">We rolled the dice and got this nice bots!</p>
+  </div>
+  <div class="grid columns items-center content-center justify-center grid-cols-1 gap-4 col-auto sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 m-8">
+    <% } %>
+    <% for(let i=0; i < nbots.length; i++) { if (i===5) break; var bot=nbots[i]; if(bot) { %>
+    <% var bott = global.bsl.users.cache.get(bot.id); %>
+    <div class="transition-shadow ease-in-out duration-300 hover:shadow-blue-900 shadow-2xl rounded-lg max-w-sm bg-blue-color " onclick="location.href='/bot/<%=bot.id%> ';" style="cursor: pointer;">
+      <img class="w-full rounded-full" src="<%= bott.avatar ? 'https://cdn.discordapp.com/avatars/' +bot.id +'/'+bott.avatar + '.webp?size=1024' : '/img/logo.webp' %>" onerror="this.src='/img/logo.webp'" alt=" <%= bot.name %>">
+      <div class="px-6 text-white text-base">
+        <p><i class="fa-solid fa-check-to-slot"></i>: <%= bot.votes || 0 %> <%if(bot.servers) { %><i class="fa fa-server"></i>: <%= bot.servers %><% } %>
+        </p>
+      </div>
+      <div class="px-6 py-4">
+        <div class="font-bold text-xl mb-2 text-white">
+          <%= bot.name %>
+        </div>
+        <p class="text-white text-base">
+          <%= bot.description %>
+        </p>
+      </div>
+      <% if(bot.tags) {%>
+      <div class="px-6 pt-4 pb-2">
+        <% bot.tags.slice(-3).forEach(tag=>{ %>
+        <a href="/tag/<%= tag %>" class="inline-block bg-button-primary rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">#<%= tag %>
+        </a>
+        <% }) %>
+      </div>
+      <% } %>
+    </div>
+    <% } } %>
+  </div>
+</div>
+<div class="promotedservers">
+  <% var nbots=servers.filter(a=> a.promoted == true)
+      nbots.forEach((val, key) => {
+      randomIndex = Math.ceil(Math.random()*(key + 1));
+      nbots[key] = nbots[randomIndex];
+      nbots[randomIndex] = val;
+      });
+      if(nbots.length > 0) { %>
+  <div class="mx-auto text-center">
+    <br>
+    <h2 class="text-xl text-white text-center"><i class="fa fa-bullhorn" aria-hidden="true"></i> Promoted Servers
+    </h2>
+    <p class="content text-white text-center" style="opacity:.6">These servers are featured on BotsCord!</p>
+  </div>
+  <div class="grid columns items-center content-center justify-center grid-cols-1 gap-4 col-auto sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 m-8">
+    <% } %>
+    <% for(let i=0; i < nbots.length; i++) { if (i===5) break; var bot=nbots[i]; if(bot) { %>
+    <% var serverr = global.bsl.guilds.cache.get(bot.id); if(serverr) { %>
+    <div class="transition-shadow ease-in-out duration-300 hover:shadow-blue-900 shadow-2xl rounded-lg max-w-sm bg-blue-color " onclick="location.href='/server/<%=bot.id%> ';" style="cursor: pointer;">
+      <img class="w-full rounded-full" src="<%= serverr.icon ? 'https://cdn.discordapp.com/icons/'+bot.id+'/'+serverr.icon+'.webp?size=1024' : '/img/logo.webp' %>" onerror="this.src='/img/logo.webp'" alt="<%= bot.name %>">
+      <div class="px-6 text-white text-base">
+        <p><i class="fa-solid fa-check-to-slot"></i>: <%= bot.votes || 0 %> <i class="fa fa-user"></i>: <%= serverr.memberCount.toLocaleString().replace(',', '.' ) %>
+        </p>
+      </div>
+      <div class="px-6 py-4">
+        <div class="font-bold text-xl mb-2 text-white">
+          <%= bot.name %>
+        </div>
+        <p class="text-white text-base">
+          <%= bot.description %>
+        </p>
+      </div>
+      <div class="px-6 pt-4 pb-2">
+        <a href="/server/<%= bot.id %>" class="inline-block bg-blue-700 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">
+          <i class="fa fa-eye" aria-hidden="true"></i> View
+        </a>
+        <a href="/server/<%= bot.id %>/invite" class="inline-block bg-blue-700 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">
+          <i class="fa fa-link" aria-hidden="true"></i> Join
+        </a>
+      </div>
+      <% if(bot.tags) {%>
+      <div class="px-6 pt-4 pb-2">
+        <% bot.tags.slice(-3).forEach(tag=>{ %>
+        <a href="/tag/<%= tag %>" class="inline-block bg-button-primary rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">#<%= tag %>
+        </a>
+        <% }) %>
+      </div>
+      <% } %>
+    </div>
+    <% } %>
+    <% } %>
+    <% } %>
+  </div>
+</div>
+<div class="bumpservers">
+  <div class="mx-auto text-center">
+    <br>
+    <h2 class="text-xl text-white text-center"><i class="fa fa-bomb" aria-hidden="true"></i> Bumped servers
+    </h2>
+    <p class="content text-white text-center" style="opacity:.6">Last bumped servers!</p>
+  </div>
+  <div class="grid columns items-center content-center justify-center grid-cols-1 gap-4 col-auto sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 m-8">
+    <% servers.sort((a, b) => b.bump - a.bump).slice(0, 5).map(bot => { 
+    if(!bot) return; %>
+    <% var serverr = global.bsl.guilds.cache.get(bot.id); if(serverr) { %>
+
+    <div class="transition-shadow ease-in-out duration-300 hover:shadow-blue-900 shadow-2xl rounded-lg max-w-sm bg-blue-color " onclick="location.href='/server/<%=bot.id%> ';" style="cursor: pointer;">
+      <img class="w-full rounded-full" src="<%= serverr.icon ? 'https://cdn.discordapp.com/icons/'+bot.id+'/'+serverr.icon+'.webp?size=1024' : '/img/logo.webp' %>" onerror="this.src='/img/logo.webp'" alt="<%= bot.name %>">
+      <div class="px-6 text-white text-base">
+        <p><i class="fa-solid fa-check-to-slot"></i>: <%= bot.votes || 0 %> <i class="fa fa-user"></i>: <%= serverr.memberCount.toLocaleString().replace(',', '.' ) %><span class="float-right"><i class="fa fa-bomb"></i>: <%=bot.bumps %></span>
+        </p>
+      </div>
+      <div class="px-6 py-4">
+        <div class="font-bold text-xl mb-2 text-white">
+          <%= bot.name %>
+        </div>
+        <p class="text-white text-base">
+          <%= bot.description %>
+        </p>
+      </div>
+      <% if(bot.tags) {%>
+      <div class="px-6 pt-4 pb-2">
+        <% bot.tags.slice(-3).forEach(tag=>{ %>
+        <a href="/tag/<%= tag %>" class="inline-block bg-button-primary rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">#<%= tag %>
+        </a>
+        <% }) %>
+      </div>
+    </div>
+    <% } %>
+    <% } %>
+    <% }) %>
+  </div>
+</div>
+<div class="randomservers">
+  <% var nbots=servers
+      nbots.forEach((val, key) => {
+      randomIndex = Math.ceil(Math.random()*(key + 1));
+      nbots[key] = nbots[randomIndex];
+      nbots[randomIndex] = val;
+      });
+      if(nbots.length > 0) { %>
+  <div class="mx-auto text-center">
+    <br>
+    <h2 class="text-xl text-white text-center"><i class="fa fa-shuffle" aria-hidden="true"></i> Random Servers
+    </h2>
+    <p class="content text-white text-center" style="opacity:.6">We rolled the dice and got this nice Servers!</p>
+  </div>
+  <div class="grid columns items-center content-center justify-center grid-cols-1 gap-4 col-auto sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 m-8">
+    <% } %>
+    <% for(let i=0; i < nbots.length; i++) { if (i===5) break; var bot=nbots[i]; if(bot) { %>
+    <% var serverr = global.bsl.guilds.cache.get(bot.id); if(serverr) { %>
+    <div class="transition-shadow ease-in-out duration-300 hover:shadow-blue-900 shadow-2xl rounded-lg max-w-sm bg-blue-color " onclick="location.href='/server/<%=bot.id%> ';" style="cursor: pointer;">
+      <img class="w-full rounded-full" src="<%= serverr.icon ? 'https://cdn.discordapp.com/icons/'+bot.id+'/'+serverr.icon+'.webp?size=1024' : '/img/logo.webp' %>" onerror="this.src='/img/logo.webp'" alt="<%= bot.name %>">
+      <div class="px-6 text-white text-base">
+        <p><i class="fa-solid fa-check-to-slot"></i>: <%= bot.votes || 0 %> <i class="fa fa-user"></i>: <%= global.bsl.guilds.cache.get(bot.id).memberCount.toLocaleString().replace(',', '.' ) %><span class="float-right"><i class="fa fa-bomb"></i>: <%=bot.bumps %></span> </p>
+      </div>
+      <div class="px-6 py-4">
+        <div class="font-bold text-xl mb-2 text-white">
+          <%= bot.name %>
+        </div>
+        <p class="text-white text-base">
+          <%= bot.description %>
+        </p>
+      </div>
+      <% if(bot.tags) {%>
+      <div class="px-6 pt-4 pb-2">
+        <% bot.tags.slice(-3).forEach(tag=>{ %>
+        <a href="/tag/<%= tag %>" class="inline-block bg-button-primary rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">#<%= tag %>
+        </a>
+        <% }) %>
+      </div>
+    </div> <% } %>
+    <% } %>
+    <% } %>
+    <% } %>
+  </div>
+</div>
+<%- include("./includes/footer.ejs") %>
